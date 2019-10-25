@@ -8,7 +8,14 @@ FROM node:10
 # Configure apt
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
-   && apt-get -y install --no-install-recommends apt-utils 2>&1
+    && apt-get -y install --no-install-recommends apt-utils 2>&1
+
+ARG USERNAME=node
+ENV HOME /home/$USERNAME
+
+RUN apt-get install -y sudo \
+    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME && \
+    chmod 0440 /etc/sudoers.d/$USERNAME
 
 # Verify git and process tools are installed
 RUN apt-get install -y git procps
@@ -37,3 +44,5 @@ ENV DEBIAN_FRONTEND=dialog
 ENV SHELL /bin/bash
 
 ENV HOST 0.0.0.0
+
+USER $USERNAME
